@@ -1,0 +1,5 @@
+/.vscode
+/MDK-ARM/*
+
+!/MDK-ARM/BoilerBot_Sentry_2023.uvprojx
+!/MDK-ARM/startup_stm32f427xx.s
