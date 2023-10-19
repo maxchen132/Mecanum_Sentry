@@ -27,8 +27,8 @@ void Remote_Control_Update(void)
 	if ((DR16_Export_Data.Remote_Control.Left_Switch == SWITCH_DOWN && DR16_Export_Data.Remote_Control.Right_Switch == SWITCH_DOWN) || (DR16_Export_Data.Info_Update_Frame < 1))
 	{
 		Robot_Control_Func.Robot_Control_Disabled();
-		//State_Machine.Robot_Ready_Flag = false;
-	} 
+		State_Machine.Robot_Ready_Flag = false;
+	}
 
 	/*
 	Right switch mid, left switch down: follow gimbal mode

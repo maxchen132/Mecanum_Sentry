@@ -23,7 +23,7 @@
 #define M2006_GEAR_RATIO 36 //M2006 motor gear ratio
 #define M2006_MECH_ANGLE_MAX 8192 //M2006 motor maximum mechanical angle
 #define M2006_FEEDER_HOLE_NUM 8 //Number of holes in the feeder
-#define M2006_ANGLE_1_BULLET 49152 //Mechanical angle needed to turn feeder for one bullet 
+#define M2006_ANGLE_1_BULLET 36864 //Mechanical angle needed to turn feeder for one bullet 
 																	 //Calculated by (M2006_MECH_ANGLE_MAX * M2006_GEAR_RATIO / M2006_FEEDER_HOLE_NUM)
 
 #define M2006_Func_GroundInit		  		\

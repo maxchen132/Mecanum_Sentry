@@ -2,19 +2,16 @@
 [![Maintainer](https://img.shields.io/badge/Maintainer-Leo-blue)](https://github.com/CuboiLeo)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
 
-# Purdue Robomaster Sentry 2023
+# Purdue Robomaster Infantry 2022
 - Written using STM32 HAL Library and CubeMX.
-- Main Control Board: DJI Robomaster Board A (STM32F427IIH6)
-<p align="center">
-  <img src="sentry.png" width="300"/>
-</p>
+- Main Control Board: DJI Robomaster Board A(STM32F427IIH6)
 
 ## Basic Components Include:
 - 4 * M3508 Motors for Chassis
-- 4 * M3508 Motors for Friction Wheels
+- 2 * M3508 Motors for Friction Wheels
 - 2 * GM6020 Motors for Gimbal (Yaw & Pitch)
-- 4 * M2006 Motor for Trigger
-- 0 * Super Capacitor for Temporary Power Overload
+- 1 * M2006 Motor for Trigger
+- 1 * Super Capacitor for Temporary Power Overload
 
 ## Current Function & Future Improvements
 - Communications

@@ -17,12 +17,8 @@
 #include "DR16_Remote.h"
 #include "Ramp_Calc.h"
 #include "Referee_System.h"
-#include <stdio.h>
-#include <stdlib.h>
 
-#define LEFT_TRIGGER_INDEX 		(1) // gimal coordinate
-#define RIGHT_TRIGGER_INDEX 	(0) // gimal coordinate
-#define FRIC_SPEED_SLOW 3000
+#define FRIC_SPEED_SLOW 7000
 #define FRIC_SPEED_16 5300		  // Tested value for 16m/s
 #define FRIC_SPEED_28 6000		  // Tested value for 28m/s
 #define LEFT_TRIGGER_DIRECTION 1  // Trigger motor direction
@@ -53,10 +49,8 @@ typedef struct
 
 	struct
 	{
-		int64_t Target_Left_Angle;
-		int64_t Target_Right_Angle;
-		float Target_Left_Speed;
-		float Target_Right_Speed;
+		float Target_Angle;
+		float Target_Speed;
 	} Trigger;
 
 	struct
