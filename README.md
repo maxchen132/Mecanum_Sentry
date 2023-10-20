@@ -3,9 +3,11 @@
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
 
 # Purdue Robomaster Sentry 2023
-![Boilerbor Sentry](sentry.png)
 - Written using STM32 HAL Library and CubeMX.
-- Main Control Board: DJI Robomaster Board A(STM32F427IIH6)
+- Main Control Board: DJI Robomaster Board A (STM32F427IIH6)
+<p align="center">
+  <img src="sentry.png" width="300"/>
+</p>
 
 ## Basic Components Include:
 - 4 * M3508 Motors for Chassis
