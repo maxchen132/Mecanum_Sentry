@@ -49,11 +49,21 @@ void Update_Robot_Pose()
 
     RBG_Pose.Orientation = RBG_Init_ORIENTATION +
                            ((-Current.Front_Left + Current.Front_Right + Current.Rear_Right - Current.Rear_Left) / (4 * (CHASSIS_HALF_WIDTH + CHASSIS_HALF_LENGTH))) * 0.3f + 0.7f * RBG_Pose.Orientation;
-
+		
+		RBG_Pose.Prev_Time = RBG_Pose.Current_Time;
+		RBG_Pose.Current_Time = HAL_GetTick();
+		RBG_Pose.Period = (RBG_Pose.Current_Time - RBG_Pose.Prev_Time)/1000.0f;
+		
+		RBG_Pose.Prev_Position_X	= RBG_Pose.Position_X;
+		RBG_Pose.Prev_Position_Y	= RBG_Pose.Position_Y;
+		RBG_Pose.Prev_Orientation_Degree = RBG_Pose.Orientation_Degree;
     RBG_Pose.Orientation_Degree = RBG_Pose.Orientation / PI * 180;
-
     RBG_Pose.Position_X += Pose_Incr.Position_X * cos(RBG_Pose.Orientation) - Pose_Incr.Position_Y * sin(RBG_Pose.Orientation);
     RBG_Pose.Position_Y += Pose_Incr.Position_X * sin(RBG_Pose.Orientation) + Pose_Incr.Position_Y * cos(RBG_Pose.Orientation);
+		
+		RBG_Pose.Velocity_X = (RBG_Pose.Position_X - RBG_Pose.Prev_Position_X)/RBG_Pose.Period;
+		RBG_Pose.Velocity_Y = (RBG_Pose.Position_Y - RBG_Pose.Prev_Position_Y)/RBG_Pose.Period;
+		RBG_Pose.Velocity_Orientation = (RBG_Pose.Orientation_Degree - RBG_Pose.Prev_Orientation_Degree)/RBG_Pose.Period;
 
     Last.Front_Right = Current.Front_Right;
     Last.Front_Left = Current.Front_Left;
@@ -72,7 +82,7 @@ void Odometry(void const *argument)
   /* USER CODE BEGIN Robot_Control */
   portTickType xLastWakeTime;
   xLastWakeTime = xTaskGetTickCount();
-  const TickType_t TimeIncrement = pdMS_TO_TICKS(1);
+  const TickType_t TimeIncrement = pdMS_TO_TICKS(5);
   /* Infinite loop */
   for (;;)
   {

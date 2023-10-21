@@ -39,7 +39,6 @@ typedef struct
 	int Prev_Mode;
 
 	float Target_Yaw;		 // deg
-	float Lag_Target_Yaw;	 // deg
 	float Last_Yaw;			 // deg
 	float Current_Yaw;		 // deg
 	float Target_Yaw_Speed;	 // deg/s

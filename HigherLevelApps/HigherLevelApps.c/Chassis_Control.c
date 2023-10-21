@@ -29,8 +29,8 @@ void Chassis_Speed_Get_Data(Chassis_t *Chassis)
 	}
 	else if (State_Machine.Control_Source == Computer)
 	{
-		Chassis->Gimbal_Coord.Vx = (DR16_Export_Data.Keyboard.Press_D.Hold_Flag - DR16_Export_Data.Keyboard.Press_A.Hold_Flag);
-		Chassis->Gimbal_Coord.Vy = (DR16_Export_Data.Keyboard.Press_W.Hold_Flag - DR16_Export_Data.Keyboard.Press_S.Hold_Flag);
+		Chassis->Gimbal_Coord.Vx = Tx2_Data.Receiving.Navigation.X_Vel;//(DR16_Export_Data.Keyboard.Press_D.Hold_Flag - DR16_Export_Data.Keyboard.Press_A.Hold_Flag);
+		Chassis->Gimbal_Coord.Vy = Tx2_Data.Receiving.Navigation.Y_Vel;//(DR16_Export_Data.Keyboard.Press_W.Hold_Flag - DR16_Export_Data.Keyboard.Press_S.Hold_Flag);
 	}
 }
 
@@ -95,6 +95,16 @@ void Chassis_Processing(Chassis_t *Chassis)
 			// The gimbal coordinate is converted to chassis coordinate through trigonometry
 			Chassis->Chassis_Coord.Vx = Chassis->Gimbal_Coord.Vx * cos(Gimbal.Angle_Difference) - Chassis->Gimbal_Coord.Vy * sin(Gimbal.Angle_Difference);
 			Chassis->Chassis_Coord.Vy = Chassis->Gimbal_Coord.Vx * sin(Gimbal.Angle_Difference) + Chassis->Gimbal_Coord.Vy * cos(Gimbal.Angle_Difference);
+			Chassis->Chassis_Coord.Wz = 0;
+
+			break;
+		}
+		
+		case (Auto_Aiming):
+		{
+			// The gimbal coordinate is converted to chassis coordinate through trigonometry
+			Chassis->Chassis_Coord.Vx = 0;
+			Chassis->Chassis_Coord.Vy = 0;
 			Chassis->Chassis_Coord.Wz = 0;
 
 			break;

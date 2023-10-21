@@ -81,6 +81,29 @@ void Gimbal_Processing(Gimbal_t *Gimbal)
 
 			break;
 		}
+		
+		case (Auto_Aiming):
+		{
+			// Reset the target angle so gimbal doesn't spin like crazy
+			if (Gimbal->Prev_Mode != Auto_Aiming)
+			{
+				Gimbal->Target_Yaw = Gimbal->Current_Yaw;
+			}
+			// soft update
+			Gimbal->Target_Yaw = -Tx2_Data.Receiving.Auto_Aiming.Yaw;
+			Gimbal->Target_Yaw_Speed = PID_Func.Positional_PID(&AutoAim_Yaw_Angle_PID,Gimbal->Target_Yaw,0);
+			Gimbal->Current_Yaw_Speed = Gimbal->Current_Yaw_Speed*0.9f + 0.1f*GM6020_Yaw.Actual_Speed;
+			GM6020_Yaw.Output_Current = PID_Func.Positional_PID(&AutoAim_Yaw_Speed_PID,Gimbal->Target_Yaw_Speed,Gimbal->Current_Yaw_Speed);
+			
+			Gimbal->Target_Pitch = -Tx2_Data.Receiving.Auto_Aiming.Pitch;
+			Gimbal->Target_Pitch_Speed = PID_Func.Positional_PID(&AutoAim_Pitch_Angle_PID,Gimbal->Target_Pitch,0);
+			Gimbal->Current_Pitch_Speed = -(Gimbal->Current_Pitch_Speed*0.9f + 0.1f*GM6020_Pitch.Actual_Speed);
+			GM6020_Pitch.Output_Current = -PID_Func.Positional_PID(&AutoAim_Pitch_Speed_PID,Gimbal->Target_Pitch_Speed,Gimbal->Current_Pitch_Speed);
+
+			Gimbal->Prev_Mode = Auto_Aiming;
+
+			break;
+		}
 
 		case (Spin_Top):
 		{

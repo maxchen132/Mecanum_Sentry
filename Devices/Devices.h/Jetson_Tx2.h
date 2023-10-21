@@ -16,35 +16,48 @@
 #include "usart.h"
 #include "Board_A_IMU.h"
 #include "User_Defined_Math.h"
+#include "Odometry.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 
-#define Tx2_Func_GroundInit				\
-	{																\
-			&Jetson_Tx2_Initialization,	\
-					&Jetson_Tx2_Get_Data,		\
-					&Jetson_Tx2_Send_Data,	\
+#define Tx2_Func_GroundInit								\
+	{																				\
+					&Jetson_Tx2_Get_Data,						\
+					&Jetson_Tx2_Send_Data,					\
+					&Jetson_Tx2_Handler,						\
+					&Jetson_Tx2_USART_Receive_DMA,	\
 	}
 
 typedef struct
 {
-	uint8_t Rx_Buffer[7];
-	uint8_t Tx_Buffer[4];
+	uint8_t Rx_Buffer[12];
+	uint8_t Tx_Buffer[33];
 	
 	struct
 	{
-		uint8_t Team_Color; //0 for red, 1 for blue
 		float Pitch_Angle;
 		float Pitch_Angular_Rate;
 		float Yaw_Angular_Rate;
+		float Position_X;
+    float Position_Y;
+    float Orientation;
+		float Velocity_X;
+		float Velocity_Y;
+		float Velocity_Orientation;
+		
+		union
+		{
+			float data[8];
+			uint8_t Data[32];
+		}Raw_Data;
 	}Sending;
 	
 	struct
 	{
 		uint8_t Frame_ID;
-		uint8_t Frame_Type; //0 for heart beat, 1 for auto aiming, 2 for navigation
+		uint8_t Frame_Type; //0 for autoaiming, 1 for navigation, 2 for heart beat
 		
 		struct
 		{
@@ -56,10 +69,8 @@ typedef struct
 			
 		struct
 		{
-			int8_t Yaw;
-			int8_t Pitch;
-			uint8_t State;
-			uint8_t _;
+			float Yaw;
+			float Pitch;
 		}Auto_Aiming;
 			
 		struct
@@ -70,22 +81,21 @@ typedef struct
 			uint8_t d;
 		}Heart_Beat;
 		
-		uint8_t CRC8;
+		union
+		{
+			uint32_t data[2];
+			uint8_t Data[8];
+		}Raw_Data;
 	}Receiving;
-	
-	enum
-	{
-		Red = 1,
-		Blue = 2,
-	}Team_Color;
 	
 }Tx2_Data_t;
 
 typedef struct
 {
-	void (*Jetson_Tx2_Initialization)(void);
 	void (*Jetson_Tx2_Get_Data)(void);
-	void (*Jetson_Tx2_Send_Data)(void);
+	void (*Jetson_Tx2_Send_Data)(UART_HandleTypeDef *huart);
+	void (*Jetson_Tx2_Handler)(UART_HandleTypeDef *huart);
+	void (*Jetson_Tx2_USART_Receive_DMA)(UART_HandleTypeDef *huartx);
 }Tx2_Func_t;
 
 

@@ -317,15 +317,15 @@ typedef struct
 			0,                      \
 			0,                      \
 			0,                      \
-			2.0f,                   \
-			0,                      \
-			20.0f,                  \
+			1.0f,                  	\
+			0,                  		\
+			0,                 			\
 			0,                      \
 			0,                      \
 			0,                      \
 			0,                      \
 			3000.0f,                \
-			0,                      \
+			0,                 			\
 	}
 
 #define AutoAim_Pitch_Speed_PIDInit \
@@ -335,33 +335,51 @@ typedef struct
 			0,                      \
 			0,                      \
 			0,                      \
-			350.0f,                 \
-			0.15f,                  \
+			800.0f,                \
+			3.0f,                  	\
+			0,               				\
 			0,                      \
 			0,                      \
 			0,                      \
 			0,                      \
-			0,                      \
-			28000.0f,               \
-			4000.0f,                \
+			30000.0f,               \
+			5000.0f,                \
 	}
 
-#define AutoAim_Yaw_PIDInit \
+#define AutoAim_Yaw_Angle_PIDInit \
 	{                       \
 		0,                  \
 			0,              \
 			0,              \
 			0,              \
 			0,              \
-			400.0f,         \
-			0,              \
-			20000.0f,       \
-			0,              \
-			0,              \
+			1.0f,         	\
+			0,          		\
+			0,       				\
 			0,              \
 			0,              \
-			28000.0f,       \
 			0,              \
+			0,              \
+			3000.0f,        \
+			0,          		\
+	}
+	
+#define AutoAim_Yaw_Speed_PIDInit \
+	{                       \
+		0,                  \
+			0,              \
+			0,              \
+			0,              \
+			0,              \
+			3500.0f,        \
+			3.0f,           \
+			0,      				\
+			0,              \
+			0,              \
+			0,              \
+			0,              \
+			30000.0f,       \
+			8000.0f,        \
 	}
 extern PID_Func_t PID_Func;
 extern PID_t Chassis_Angle_PID;
@@ -380,6 +398,7 @@ extern PID_t Trigger_Angle_PID;
 extern PID_t Trigger_Speed_PID;
 extern PID_t AutoAim_Pitch_Angle_PID;
 extern PID_t AutoAim_Pitch_Speed_PID;
-extern PID_t AutoAim_Yaw_PID;
+extern PID_t AutoAim_Yaw_Angle_PID;
+extern PID_t AutoAim_Yaw_Speed_PID;
 
 #endif

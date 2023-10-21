@@ -30,6 +30,7 @@ typedef struct
 	enum
 	{
 		Follow_Gimbal,
+		Auto_Aiming,
 		Not_Follow_Gimbal,
 		Spin_Top,
 		Disabled,
