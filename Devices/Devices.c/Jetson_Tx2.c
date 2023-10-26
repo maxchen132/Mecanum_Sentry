@@ -32,17 +32,16 @@ void Jetson_Tx2_Get_Data(void)
 		{
 			case 0:
 				memcpy(&Tx2_Data.Receiving.Raw_Data.Data[0],&Tx2_Data.Rx_Buffer[4],8*sizeof(uint8_t));
-				if(fabs(*(float*)&Tx2_Data.Receiving.Raw_Data.data[0]) > 0.01f)
-					Tx2_Data.Receiving.Auto_Aiming.Yaw = *(float*)&Tx2_Data.Receiving.Raw_Data.data[0];
-				if(fabs(*(float*)&Tx2_Data.Receiving.Raw_Data.data[1]) > 0.01f)
-					Tx2_Data.Receiving.Auto_Aiming.Pitch = *(float*)&Tx2_Data.Receiving.Raw_Data.data[1];
+				Tx2_Data.Receiving.Auto_Aiming.Yaw = Tx2_Data.Receiving.Raw_Data.data[0];
+				Tx2_Data.Receiving.Auto_Aiming.Pitch = Tx2_Data.Receiving.Raw_Data.data[1];
 				break;
 			
 			case 1:
-				Tx2_Data.Receiving.Navigation.X_Vel = 0.1f * (int8_t)Tx2_Data.Rx_Buffer[2];
-				Tx2_Data.Receiving.Navigation.Y_Vel = 0.1f * (int8_t)Tx2_Data.Rx_Buffer[3];
-				Tx2_Data.Receiving.Navigation.Yaw_Angular_Rate = (int8_t)Tx2_Data.Rx_Buffer[4];
-				Tx2_Data.Receiving.Navigation.State = Tx2_Data.Rx_Buffer[5];
+				memcpy(&Tx2_Data.Receiving.Raw_Data.Data[0],&Tx2_Data.Rx_Buffer[4],12*sizeof(uint8_t));
+				Tx2_Data.Receiving.Navigation.X_Vel = Tx2_Data.Receiving.Raw_Data.data[0];
+				Tx2_Data.Receiving.Navigation.Y_Vel = Tx2_Data.Receiving.Raw_Data.data[1];
+				Tx2_Data.Receiving.Navigation.Yaw_Angular_Rate = Tx2_Data.Receiving.Raw_Data.data[2];
+				Tx2_Data.Receiving.Navigation.State = Tx2_Data.Rx_Buffer[16];
 				break;
 			
 			case 2:
@@ -56,20 +55,18 @@ void Jetson_Tx2_Get_Data(void)
 				break;
 		}
 	}
-	
 }
 
 void Jetson_Tx2_Send_Data(UART_HandleTypeDef *huart)
 {
-	Tx2_Data.Sending.Pitch_Angle = Board_A_IMU.Export_Data.Pitch;
-	Tx2_Data.Sending.Pitch_Angular_Rate = Board_A_IMU.Export_Data.Gyro_Pitch;
-	Tx2_Data.Sending.Yaw_Angular_Rate = Board_A_IMU.Export_Data.Gyro_Yaw;
-	Tx2_Data.Sending.Position_X = RBG_Pose.Position_X;
-	Tx2_Data.Sending.Position_Y = RBG_Pose.Position_Y;
+	Tx2_Data.Sending.Pitch_Angle = Board_A_IMU.Export_Data.Pitch / 180.0f * PI;
+	Tx2_Data.Sending.Pitch_Angular_Rate = Board_A_IMU.Export_Data.Gyro_Pitch / 180.0f * PI;
+	Tx2_Data.Sending.Yaw_Angular_Rate = Board_A_IMU.Export_Data.Gyro_Yaw / 180.0f * PI;
+	Tx2_Data.Sending.Position_X = RBG_Pose.Position_X / 1000.0f;
+	Tx2_Data.Sending.Position_Y = RBG_Pose.Position_Y / 1000.0f;
 	Tx2_Data.Sending.Orientation = RBG_Pose.Orientation;
-	Tx2_Data.Sending.Velocity_X = RBG_Pose.Velocity_X;
-	Tx2_Data.Sending.Velocity_Y = RBG_Pose.Velocity_Y;
-	Tx2_Data.Sending.Velocity_Orientation = RBG_Pose.Velocity_Orientation;
+	Tx2_Data.Sending.Velocity_X = RBG_Pose.Velocity_X / 1000.0f;
+	Tx2_Data.Sending.Velocity_Y = RBG_Pose.Velocity_Y / 1000.0f;
 	
 	Tx2_Data.Sending.Raw_Data.data[0] = Tx2_Data.Sending.Pitch_Angle;
 	Tx2_Data.Sending.Raw_Data.data[1] = Tx2_Data.Sending.Pitch_Angular_Rate;

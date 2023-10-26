@@ -32,20 +32,19 @@
 
 typedef struct
 {
-	uint8_t Rx_Buffer[12];
+	uint8_t Rx_Buffer[20];
 	uint8_t Tx_Buffer[33];
 	
 	struct
 	{
-		float Pitch_Angle;
-		float Pitch_Angular_Rate;
-		float Yaw_Angular_Rate;
-		float Position_X;
-    float Position_Y;
-    float Orientation;
-		float Velocity_X;
-		float Velocity_Y;
-		float Velocity_Orientation;
+		float Pitch_Angle; //rad
+		float Pitch_Angular_Rate; //rad/s
+		float Yaw_Angular_Rate;	//rad/s
+		float Position_X;	//m
+    float Position_Y; //m
+    float Orientation; //rad
+		float Velocity_X; //m/s
+		float Velocity_Y; //m/s
 		
 		union
 		{
@@ -61,9 +60,9 @@ typedef struct
 		
 		struct
 		{
-			float X_Vel;	// 0.1 m/s
-			float Y_Vel; // 0.1 m/s
-			int8_t Yaw_Angular_Rate;  // degree/s
+			float X_Vel;	//m/s
+			float Y_Vel; //m/s
+			float Yaw_Angular_Rate;  //rad/s
 			uint8_t State; // 0 for stationary, 1 for moving, 2 for spinning
 		}Navigation;
 			
@@ -83,8 +82,8 @@ typedef struct
 		
 		union
 		{
-			uint32_t data[2];
-			uint8_t Data[8];
+			float data[3];
+			uint8_t Data[12];
 		}Raw_Data;
 	}Receiving;
 	
