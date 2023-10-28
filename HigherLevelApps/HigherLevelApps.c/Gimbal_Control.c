@@ -33,7 +33,7 @@ void Gimbal_Control_Get_Data(Gimbal_t *Gimbal)
 	// The multiplying/dividing constant are tested value and can be changed
 	if (State_Machine.Control_Source == Remote_Control)
 	{
-		Gimbal->Target_Yaw += Tx2_Data.Receiving.Navigation.Yaw_Angular_Rate /PI * 180.0f / 500.0f; //Gimbal->Target_Yaw * 0.7f + 0.3f * (Gimbal->Target_Yaw - DR16_Export_Data.Remote_Control.Joystick_Right_Vx / 650.0f);
+		Gimbal->Target_Yaw += 2 * Tx2_Data.Receiving.Navigation.Yaw_Angular_Rate /PI * 180.0f / 500.0f; //Gimbal->Target_Yaw * 0.7f + 0.3f * (Gimbal->Target_Yaw - DR16_Export_Data.Remote_Control.Joystick_Right_Vx / 650.0f);
 
 		// Set Current Yaw as Target when stop turn command (prevent yaw overshooting)
 		if (DR16_Export_Data.Remote_Control.Joystick_Right_Vx)

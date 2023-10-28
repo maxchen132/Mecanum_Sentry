@@ -24,13 +24,13 @@ void Chassis_Speed_Get_Data(Chassis_t *Chassis)
 {
 	if (State_Machine.Control_Source == Remote_Control)
 	{
-		Chassis->Gimbal_Coord.Vx = 0;//DR16_Export_Data.Remote_Control.Joystick_Left_Vx / 660.0f;
-		Chassis->Gimbal_Coord.Vy = Tx2_Data.Receiving.Navigation.Y_Vel;// DR16_Export_Data.Remote_Control.Joystick_Left_Vy / 660.0f;
+		Chassis->Gimbal_Coord.Vx = Tx2_Data.Receiving.Navigation.Y_Vel;//DR16_Export_Data.Remote_Control.Joystick_Left_Vx / 660.0f;
+		Chassis->Gimbal_Coord.Vy = Tx2_Data.Receiving.Navigation.X_Vel;// DR16_Export_Data.Remote_Control.Joystick_Left_Vy / 660.0f;
 	}
 	else if (State_Machine.Control_Source == Computer)
 	{
-		Chassis->Gimbal_Coord.Vx = Tx2_Data.Receiving.Navigation.X_Vel;//(DR16_Export_Data.Keyboard.Press_D.Hold_Flag - DR16_Export_Data.Keyboard.Press_A.Hold_Flag);
-		Chassis->Gimbal_Coord.Vy = Tx2_Data.Receiving.Navigation.Y_Vel;//(DR16_Export_Data.Keyboard.Press_W.Hold_Flag - DR16_Export_Data.Keyboard.Press_S.Hold_Flag);
+		Chassis->Gimbal_Coord.Vx = 2 * Tx2_Data.Receiving.Navigation.Y_Vel;//Tx2_Data.Receiving.Navigation.X_Vel;//(DR16_Export_Data.Keyboard.Press_D.Hold_Flag - DR16_Export_Data.Keyboard.Press_A.Hold_Flag);
+		Chassis->Gimbal_Coord.Vy = 2 * Tx2_Data.Receiving.Navigation.X_Vel;//Tx2_Data.Receiving.Navigation.Y_Vel;//(DR16_Export_Data.Keyboard.Press_W.Hold_Flag - DR16_Export_Data.Keyboard.Press_S.Hold_Flag);
 	}
 }
 
