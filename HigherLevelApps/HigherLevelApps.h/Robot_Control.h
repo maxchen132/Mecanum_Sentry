@@ -31,6 +31,7 @@ typedef struct
 	{
 		Follow_Gimbal,
 		Auto_Aiming,
+		Auto_Navigation,
 		Not_Follow_Gimbal,
 		Spin_Top,
 		Disabled,

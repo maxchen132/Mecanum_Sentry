@@ -33,7 +33,7 @@ void Gimbal_Control_Get_Data(Gimbal_t *Gimbal)
 	// The multiplying/dividing constant are tested value and can be changed
 	if (State_Machine.Control_Source == Remote_Control)
 	{
-		Gimbal->Target_Yaw += 2 * Tx2_Data.Receiving.Navigation.Yaw_Angular_Rate /PI * 180.0f / 500.0f; //Gimbal->Target_Yaw * 0.7f + 0.3f * (Gimbal->Target_Yaw - DR16_Export_Data.Remote_Control.Joystick_Right_Vx / 650.0f);
+		Gimbal->Target_Yaw = Gimbal->Target_Yaw * 0.7f + 0.3f * (Gimbal->Target_Yaw - DR16_Export_Data.Remote_Control.Joystick_Right_Vx / 650.0f);
 
 		// Set Current Yaw as Target when stop turn command (prevent yaw overshooting)
 		if (DR16_Export_Data.Remote_Control.Joystick_Right_Vx)
@@ -104,6 +104,28 @@ void Gimbal_Processing(Gimbal_t *Gimbal)
 
 			break;
 		}
+		
+		case (Auto_Navigation):
+		{
+			// Reset the target angle so gimbal doesn't spin like crazy
+			if (Gimbal->Prev_Mode != Auto_Navigation)
+			{
+				Gimbal->Target_Yaw = Gimbal->Current_Yaw;
+			}
+			Gimbal->Target_Yaw += Tx2_Data.Receiving.Navigation.Yaw_Angular_Rate /PI * 180.0f / 500.0f; 
+			// soft update
+			Gimbal->Target_Yaw_Speed = Gimbal->Target_Yaw_Speed * 0.85f + 0.15f * PID_Func.Positional_PID_Min_Error(&Yaw_Angle_Follow_PID, Gimbal->Target_Yaw, Gimbal->Current_Yaw, 0.0);
+			GM6020_Yaw.Output_Current = GM6020_Yaw.Output_Current * 0.85f + 0.15f * PID_Func.Positional_PID_Min_Error(&Yaw_Speed_Follow_PID, Gimbal->Target_Yaw_Speed, Gimbal->Current_Yaw_Speed, 0.0);
+			Gimbal->Current_Pitch = PITCH_DIRECTION * Board_A_IMU.Export_Data.Pitch;
+			Gimbal->Pitch_Angle_Output = PID_Func.Positional_PID(&Pitch_Angle_PID, Gimbal->Target_Pitch, -Gimbal->Current_Pitch);
+			GM6020_Pitch.Output_Current = PID_Func.Positional_PID(&AutoAim_Pitch_Speed_PID, Gimbal->Pitch_Angle_Output, -Board_A_IMU.Export_Data.Gyro_Pitch);
+
+			Gimbal->Prev_Mode = Auto_Navigation;
+
+			break;
+		}
+		
+		 
 
 		case (Spin_Top):
 		{

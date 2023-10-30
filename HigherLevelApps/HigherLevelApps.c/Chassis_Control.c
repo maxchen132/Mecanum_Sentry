@@ -24,13 +24,13 @@ void Chassis_Speed_Get_Data(Chassis_t *Chassis)
 {
 	if (State_Machine.Control_Source == Remote_Control)
 	{
-		Chassis->Gimbal_Coord.Vx = Tx2_Data.Receiving.Navigation.Y_Vel;//DR16_Export_Data.Remote_Control.Joystick_Left_Vx / 660.0f;
-		Chassis->Gimbal_Coord.Vy = Tx2_Data.Receiving.Navigation.X_Vel;// DR16_Export_Data.Remote_Control.Joystick_Left_Vy / 660.0f;
+		Chassis->Gimbal_Coord.Vx = DR16_Export_Data.Remote_Control.Joystick_Left_Vx / 660.0f;
+		Chassis->Gimbal_Coord.Vy = DR16_Export_Data.Remote_Control.Joystick_Left_Vy / 660.0f;
 	}
 	else if (State_Machine.Control_Source == Computer)
 	{
-		Chassis->Gimbal_Coord.Vx = 2 * Tx2_Data.Receiving.Navigation.Y_Vel;//Tx2_Data.Receiving.Navigation.X_Vel;//(DR16_Export_Data.Keyboard.Press_D.Hold_Flag - DR16_Export_Data.Keyboard.Press_A.Hold_Flag);
-		Chassis->Gimbal_Coord.Vy = 2 * Tx2_Data.Receiving.Navigation.X_Vel;//Tx2_Data.Receiving.Navigation.Y_Vel;//(DR16_Export_Data.Keyboard.Press_W.Hold_Flag - DR16_Export_Data.Keyboard.Press_S.Hold_Flag);
+		Chassis->Gimbal_Coord.Vx = (DR16_Export_Data.Keyboard.Press_D.Hold_Flag - DR16_Export_Data.Keyboard.Press_A.Hold_Flag);
+		Chassis->Gimbal_Coord.Vy = (DR16_Export_Data.Keyboard.Press_W.Hold_Flag - DR16_Export_Data.Keyboard.Press_S.Hold_Flag);
 	}
 }
 
@@ -96,6 +96,20 @@ void Chassis_Processing(Chassis_t *Chassis)
 			Chassis->Chassis_Coord.Vx = Chassis->Gimbal_Coord.Vx * cos(Gimbal.Angle_Difference) - Chassis->Gimbal_Coord.Vy * sin(Gimbal.Angle_Difference);
 			Chassis->Chassis_Coord.Vy = Chassis->Gimbal_Coord.Vx * sin(Gimbal.Angle_Difference) + Chassis->Gimbal_Coord.Vy * cos(Gimbal.Angle_Difference);
 			Chassis->Chassis_Coord.Wz = 0;
+
+			break;
+		}
+		
+		case (Auto_Navigation):
+		{
+			// The gimbal coordinate is converted to chassis coordinate through trigonometry
+			Chassis->Gimbal_Coord.Vx = 0.5f * Tx2_Data.Receiving.Navigation.Y_Vel;
+			Chassis->Gimbal_Coord.Vy = 0.5f * Tx2_Data.Receiving.Navigation.X_Vel;
+			Chassis->Chassis_Coord.Vx = Chassis->Gimbal_Coord.Vx * cos(Gimbal.Angle_Difference) - Chassis->Gimbal_Coord.Vy * sin(Gimbal.Angle_Difference);
+			Chassis->Chassis_Coord.Vy = Chassis->Gimbal_Coord.Vx * sin(Gimbal.Angle_Difference) + Chassis->Gimbal_Coord.Vy * cos(Gimbal.Angle_Difference);
+
+			Chassis->Chassis_Coord.Wz = Chassis->Chassis_Coord.Wz * 0.8f - 0.2f * PID_Func.Positional_PID_Min_Error(&Chassis_Small_Angle_PID,
+																													(fmod(Gimbal.Target_Yaw - RBG_Pose.Orientation_Degree, 360.0f) > 180.0f) ? fmod(Gimbal.Target_Yaw - RBG_Pose.Orientation_Degree, 360.0f) - 360.f : fmod(Gimbal.Target_Yaw - RBG_Pose.Orientation_Degree, 360.0f), 0, 0.0f);
 
 			break;
 		}
