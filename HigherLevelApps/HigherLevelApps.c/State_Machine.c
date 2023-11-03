@@ -32,7 +32,7 @@ void Remote_Control_Update(void)
 
 	/*
 	Right switch mid, left switch down: follow gimbal mode
-	Right switch mid, left switch mid: not follow gimbal mode
+	Right switch mid, left switch mid: not follow gimbal mode **Temporarily changed to search for bad guys mode**
 	Right switch mid, left switch up: spintop mode
 	*/
 	else if (DR16_Export_Data.Remote_Control.Right_Switch == SWITCH_MID)
@@ -43,15 +43,16 @@ void Remote_Control_Update(void)
 		{
 		case (SWITCH_DOWN):
 		{
-			Chassis.Current_Mode = Follow_Gimbal;
-			Gimbal.Current_Mode = Follow_Gimbal;
+			//Chassis.Current_Mode = Follow_Gimbal;
+			Gimbal.Current_Mode = Search_For_Bad_Guys;
+			Chassis.Current_Mode = Not_Follow_Gimbal;
 
 			break;
 		}
 		case (SWITCH_MID):
 		{
 			Chassis.Current_Mode = Not_Follow_Gimbal;
-			Gimbal.Current_Mode = Not_Follow_Gimbal;
+			Gimbal.Current_Mode = Not_Follow_Gimbal; 
 
 			break;
 		}

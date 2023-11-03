@@ -32,6 +32,7 @@ typedef struct
 		Follow_Gimbal,
 		Not_Follow_Gimbal,
 		Spin_Top,
+		Search_For_Bad_Guys, //stuff michael li added
 		Disabled,
 	} Mode;
 
