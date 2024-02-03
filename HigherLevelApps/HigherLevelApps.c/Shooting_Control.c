@@ -12,6 +12,7 @@
 
 Shooting_t Shooting;
 Ramp_Calc_t Fric_Wheel_Ramp;
+Motor_Init_t M3508_Fric_Wheel[4];
 
 void Shooting_Init(void);
 void Turn_Friction_Wheel_On(void);

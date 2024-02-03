@@ -64,5 +64,6 @@ typedef struct
 
 extern Chassis_t Chassis;
 extern Chassis_Func_t Chassis_Func;
+extern Motor_Init_t M3508_Chassis[4];
 
 #endif

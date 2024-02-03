@@ -40,14 +40,16 @@ void Robot_Control_Start(void)
 
 void Robot_Control_Send(void)
 {
-	M3508_Func.M3508_Chassis_Send_Data(M3508_Chassis[0].Output_Current,
+	M3508_Func.M3508_Send_Data(M3508_Chassis[0].Output_Current,
 									   M3508_Chassis[1].Output_Current,
 									   M3508_Chassis[2].Output_Current,
-									   M3508_Chassis[3].Output_Current);
-	M3508_Func.M3508_Fric_Wheel_Send_Data(M3508_Fric_Wheel[0].Output_Current,
+									   M3508_Chassis[3].Output_Current,
+									   hcan1);
+	M3508_Func.M3508_Send_Data(M3508_Fric_Wheel[0].Output_Current,
 										  M3508_Fric_Wheel[1].Output_Current,
 										  M3508_Fric_Wheel[2].Output_Current,
-										  M3508_Fric_Wheel[3].Output_Current);
+										  M3508_Fric_Wheel[3].Output_Current
+										  hcan2);
 	GM6020_Func.GM6020_Gimbal_Send_Data(GM6020_Pitch.Output_Current, GM6020_Yaw.Output_Current);
 	M2006_Func.M2006_Trigger_Send_Data(M2006_Trigger[0].Output_Current, M2006_Trigger[1].Output_Current);
 	Super_Capacitor_Func.Super_Capacitor_Send_Data(Super_Capacitor.Target_Power);

@@ -41,6 +41,8 @@
 #include "Buzzer.h"
 #include "Jetson_Tx2.h"
 #include "Odometry.h"
+#include "Chassis_Control.h"
+#include "Shooting_Control.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -170,7 +172,7 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN RTOS_THREADS */
   osThreadDef(Task_Odometry, Odometry, osPriorityAboveNormal, 0, 640);
   Task_OdometryHandle = osThreadCreate(osThread(Task_Odometry), NULL);
-  
+
   osThreadDef(Task_SpeedCalc, SpeedCalc, osPriorityAboveNormal, 0, 256);
   Task_SpeedCalcHandle = osThreadCreate(osThread(Task_SpeedCalc), NULL);
 
@@ -200,13 +202,13 @@ void StartIMUTask(void const * argument)
 		Board_A_IMU_Func.Board_A_IMU_Read_Data(&Board_A_IMU);
 		Board_A_IMU_Func.Board_A_IMU_Calc_Angle(&Board_A_IMU);
 		IMU_Temp_Control_Func.Board_A_IMU_Temp_Control();
-		
+
 		#ifdef USE_MPU6050
 		MPU6050_IMU_Func.MPU6050_IMU_Calibrate(&MPU6050_IMU);
 		MPU6050_IMU_Func.MPU6050_IMU_Read_Data(&MPU6050_IMU);
 		MPU6050_IMU_Func.MPU6050_IMU_Calc_Angle(&MPU6050_IMU);
 		#endif
-		
+
     vTaskDelayUntil(&xLastWakeTime, TimeIncrement);
   }
   /* USER CODE END StartIMUTask */
@@ -226,7 +228,7 @@ void General_Init(void const * argument)
 	Buzzer_Func.Buzzer_Init();
 	//Buzzer_Func.Buzzer_Robot_Initializing();
   IMU_Temp_Control_Func.Board_A_IMU_Temp_Control_Init();
-	Board_A_IMU_Func.Board_A_IMU_Init();	
+	Board_A_IMU_Func.Board_A_IMU_Init();
 	#ifdef USE_MPU6050
 	MPU6050_IMU_Func.MPU6050_IMU_Init();
 	#endif
@@ -286,8 +288,14 @@ void CAN1_Rec(void const * argument)
 			GM6020_Func.GM6020_Pitch_Get_Data(CAN_Export_Data);
     else if(ID == SUPERCAP_ID)
 			Super_Capacitor_Func.Super_Capacitor_Get_Data(CAN_Export_Data);
-		else if(ID >= M3508_CHASSIS_START_ID && ID <= M3508_CHASSIS_END_ID)
-			M3508_Func.M3508_Chassis_Get_Data(CAN_Export_Data);
+		else if(ID == M3508_CHASSIS_FIRST_ID)
+			M3508_Func.M3508_Get_Data(CAN_Export_Data, M3508_Chassis[0]);
+    else if(ID == M3508_CHASSIS_SECOND_ID)
+			M3508_Func.M3508_Get_Data(CAN_Export_Data, M3508_Chassis[1]);
+    else if(ID == M3508_CHASSIS_THIRD_ID)
+			M3508_Func.M3508_Get_Data(CAN_Export_Data, M3508_Chassis[2]);
+    else if(ID == M3508_CHASSIS_FOURTH_ID)
+			M3508_Func.M3508_Get_Data(CAN_Export_Data, M3508_Chassis[3]);
 		else if(ID == GM6020_YAW_ID)
 			GM6020_Func.GM6020_Yaw_Get_Data(CAN_Export_Data);
 
@@ -313,12 +321,17 @@ void CAN2_Rec(void const * argument)
   {
 		xQueueReceive(CAN2_ReceiveHandle, &CAN_Export_Data, portMAX_DELAY);
 		ID = CAN_Export_Data.CAN_RxHeader.StdId;
-    if(ID == M3508_FRIC_WHEEL_LEFT_UP_ID || ID == M3508_FRIC_WHEEL_LEFT_DOWN_ID || 
-    ID == M3508_FRIC_WHEEL_RIGHT_UP_ID || ID == M3508_FRIC_WHEEL_RIGHT_DOWN_ID)
-			M3508_Func.M3508_Fric_Wheel_Get_Data(CAN_Export_Data);
+    if (ID == M3508_FRIC_WHEEL_LEFT_UP_ID)
+      M3508_Func.M3508_Get_Data(CAN_Export_Data, M3508_Fric_Wheel[0]);
+    else if (ID == M3508_FRIC_WHEEL_LEFT_DOWN_ID)
+      M3508_Func.M3508_Get_Data(CAN_Export_Data, M3508_Fric_Wheel[1]);
+    else if (ID == M3508_FRIC_WHEEL_RIGHT_UP_ID)
+      M3508_Func.M3508_Get_Data(CAN_Export_Data, M3508_Fric_Wheel[2]);
+    else if (ID == M3508_FRIC_WHEEL_RIGHT_DOWN_ID)
+      M3508_Func.M3508_Get_Data(CAN_Export_Data, M3508_Fric_Wheel[3]);
 		else if(ID == M2006_TRIGGER_LEFT_ID || ID == M2006_TRIGGER_RIGHT_ID)
 			M2006_Func.M2006_Trigger_Get_Data(CAN_Export_Data);
-		else 
+		else
 		Monitor_CAN2.Info_Update_Frame++;
   }
   /* USER CODE END CAN2_Rec */

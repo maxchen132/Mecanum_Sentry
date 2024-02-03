@@ -12,6 +12,7 @@
 #include "Odometry.h"
 
 Chassis_t Chassis;
+Motor_Init_t M3508_Chassis[4];
 
 void Chassis_Speed_Get_Data(Chassis_t *Chassis);
 void Inverse_Kinematic_Calc(Chassis_t *Chassis);

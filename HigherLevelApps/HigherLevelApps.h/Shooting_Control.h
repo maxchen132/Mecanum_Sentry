@@ -71,5 +71,6 @@ typedef struct
 
 extern Shooting_t Shooting;
 extern Shooting_Func_t Shooting_Func;
+extern Motor_Init_t M3508_Fric_Wheel[4];
 
 #endif
